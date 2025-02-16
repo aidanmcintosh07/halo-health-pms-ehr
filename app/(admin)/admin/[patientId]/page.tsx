@@ -1,6 +1,6 @@
 import Header from "@/components/custom/Header";
 import MedicalForm from "@/components/custom/MedicalForm";
-import { prisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 
 import Link from "next/link";
