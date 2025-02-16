@@ -1,6 +1,8 @@
 import EditPatientForm from "@/components/custom/EditPatientForm";
 import Header from "@/components/custom/Header";
 import { prisma } from "@/lib/db";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";
@@ -15,44 +17,56 @@ function formatDate(date: string | Date | null) {
 }
 
 async function fetchPatientData(id: string) {
-	const result = await prisma.$transaction(async (tx) => {
-		const patientData = await tx.patient.findFirst({
-			where: {
-				owner_id: id,
-			},
-			include: {
-				medicalRecords: true,
-				educationHistory: true,
-				employmentHistory: true,
-			},
-		});
+	const result = await prisma.$transaction(
+		async (
+			tx: Omit<
+				PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+				| "$connect"
+				| "$disconnect"
+				| "$on"
+				| "$transaction"
+				| "$use"
+				| "$extends"
+			>
+		) => {
+			const patientData = await tx.patient.findFirst({
+				where: {
+					owner_id: id,
+				},
+				include: {
+					medicalRecords: true,
+					educationHistory: true,
+					employmentHistory: true,
+				},
+			});
 
-		if (!patientData) return { patientData: null };
+			if (!patientData) return { patientData: null };
 
-		// Convert Date objects to readable strings
-		const serializedData = {
-			...patientData,
-			date_of_birth: formatDate(patientData.date_of_birth),
-			created_at: formatDate(patientData.created_at),
-			updated_at: formatDate(patientData.updated_at),
-			educationHistory: patientData.educationHistory.map((edu) => ({
-				...edu,
-				start_date: formatDate(new Date(edu.start_date)),
-				end_date: edu.end_date ? new Date(edu.end_date) : null,
-			})),
-			employmentHistory: patientData.employmentHistory.map((job) => ({
-				...job,
-				start_date: formatDate(new Date(job.start_date)),
-				end_date: job.end_date ? formatDate(new Date(job.end_date)) : null,
-			})),
-			medicalRecords: patientData.medicalRecords.map((record) => ({
-				...record,
-				visit_date: formatDate(record.visit_date),
-			})),
-		};
+			// Convert Date objects to readable strings
+			const serializedData = {
+				...patientData,
+				date_of_birth: formatDate(patientData.date_of_birth),
+				created_at: formatDate(patientData.created_at),
+				updated_at: formatDate(patientData.updated_at),
+				educationHistory: patientData.educationHistory.map((edu) => ({
+					...edu,
+					start_date: formatDate(new Date(edu.start_date)),
+					end_date: edu.end_date ? new Date(edu.end_date) : null,
+				})),
+				employmentHistory: patientData.employmentHistory.map((job) => ({
+					...job,
+					start_date: formatDate(new Date(job.start_date)),
+					end_date: job.end_date ? formatDate(new Date(job.end_date)) : null,
+				})),
+				medicalRecords: patientData.medicalRecords.map((record) => ({
+					...record,
+					visit_date: formatDate(record.visit_date),
+				})),
+			};
 
-		return { patientData: serializedData };
-	});
+			return { patientData: serializedData };
+		}
+	);
 
 	return result;
 }
