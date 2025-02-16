@@ -1,8 +1,7 @@
 import AdminEditPatientForm from "@/components/custom/AdminEditPatientForm";
 import Header from "@/components/custom/Header";
 import { prisma } from "@/lib/db";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { Prisma } from "@prisma/client";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";
@@ -15,17 +14,7 @@ function formatDate(date: string | Date | null) {
 
 async function fetchPatientData(id: string) {
 	const result = await prisma.$transaction(
-		async (
-			tx: Omit<
-				PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-				| "$connect"
-				| "$disconnect"
-				| "$on"
-				| "$transaction"
-				| "$use"
-				| "$extends"
-			>
-		) => {
+		async (tx: Prisma.TransactionClient) => {
 			const patientData = await tx.patient.findFirst({
 				where: { patient_id: id },
 				include: {

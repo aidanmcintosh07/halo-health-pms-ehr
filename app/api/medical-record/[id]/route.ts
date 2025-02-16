@@ -1,13 +1,8 @@
 import { prisma } from "@/lib/db";
 import { MedicalRecord } from "@/typings";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import {
-	EducationHistory,
-	EmploymentHistory,
-	Prisma,
-	PrismaClient,
-} from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { EducationHistory, EmploymentHistory, Prisma } from "@prisma/client";
+
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = Promise<{ id: string }>;
@@ -35,17 +30,7 @@ export async function PATCH(req: NextRequest, segmentData: { params: Params }) {
 		console.log("✅ Updating patient...");
 
 		const result = await prisma.$transaction(
-			async (
-				tx: Omit<
-					PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-					| "$connect"
-					| "$disconnect"
-					| "$on"
-					| "$transaction"
-					| "$use"
-					| "$extends"
-				>
-			) => {
+			async (tx: Prisma.TransactionClient) => {
 				// ✅ Update Patient
 				const updatedPatient = await tx.patient.update({
 					where: { owner_id: id },
@@ -185,17 +170,7 @@ export async function DELETE(
 		await auth.protect();
 
 		const deletedPatient = await prisma.$transaction(
-			async (
-				tx: Omit<
-					PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-					| "$connect"
-					| "$disconnect"
-					| "$on"
-					| "$transaction"
-					| "$use"
-					| "$extends"
-				>
-			) => {
+			async (tx: Prisma.TransactionClient) => {
 				await tx.medicalRecord.deleteMany({
 					where: { patient: { owner_id: id } },
 				});

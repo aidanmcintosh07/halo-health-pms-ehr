@@ -2,8 +2,7 @@ import Header from "@/components/custom/Header";
 import MedicalForm from "@/components/custom/MedicalForm";
 import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
 
 function formatDate(date: string | Date | null) {
@@ -20,17 +19,7 @@ function formatDate(date: string | Date | null) {
 
 async function fetchPatientData(id: string) {
 	const result = await prisma.$transaction(
-		async (
-			tx: Omit<
-				PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-				| "$connect"
-				| "$disconnect"
-				| "$on"
-				| "$transaction"
-				| "$use"
-				| "$extends"
-			>
-		) => {
+		async (tx: Prisma.TransactionClient) => {
 			const patientData = await tx.patient.findFirst({
 				where: {
 					owner_id: id,

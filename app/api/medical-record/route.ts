@@ -5,9 +5,8 @@ import {
 	EmploymentHistory,
 	MedicalRecord,
 	Prisma,
-	PrismaClient,
 } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+
 import { NextRequest, NextResponse } from "next/server";
 
 // * Root of the medical-record API enpoint issues
@@ -34,17 +33,7 @@ export async function POST(req: NextRequest) {
 		console.log("✅ Creating patient...");
 
 		const result = await prisma.$transaction(
-			async (
-				tx: Omit<
-					PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-					| "$connect"
-					| "$disconnect"
-					| "$on"
-					| "$transaction"
-					| "$use"
-					| "$extends"
-				>
-			) => {
+			async (tx: Prisma.TransactionClient) => {
 				const newPatient = await tx.patient.create({
 					data: {
 						owner_id: user.id,
