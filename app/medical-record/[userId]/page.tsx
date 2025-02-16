@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
-import { Prisma } from "@/prisma/generated/client";
+import { Prisma } from "@prisma/client";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";

@@ -3,7 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
 
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@/prisma/generated/client";
+import { Prisma } from "@prisma/client";
 
 type Params = Promise<{ id: string }>;
 
