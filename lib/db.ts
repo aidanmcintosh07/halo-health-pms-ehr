@@ -1,8 +1,16 @@
-// lib/prisma.ts
-import { PrismaClient } from "@prisma/client";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import { PrismaClient } from "../../prisma/generated/client";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+let prisma: PrismaClient;
 
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV === "production") {
+	prisma = new PrismaClient();
+} else {
+	if (!global.prisma) {
+		global.prisma = new PrismaClient();
+	}
+	prisma = global.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export default prisma;
