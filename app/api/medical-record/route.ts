@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
 
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/prisma/generated/client";
 
 // * Root of the medical-record API enpoint issues
 // ! Index of arrays wasn't specfied in the data creation

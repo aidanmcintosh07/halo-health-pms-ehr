@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { NextRequest, NextResponse } from "next/server";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/prisma/generated/client";
 
 type Params = Promise<{ patientId: string }>;
 

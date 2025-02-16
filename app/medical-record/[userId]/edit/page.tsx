@@ -1,7 +1,7 @@
 import EditPatientForm from "@/components/custom/EditPatientForm";
 import Header from "@/components/custom/Header";
-import { prisma } from "@/lib/db";
-import { Prisma } from "@prisma/client";
+import prisma from "@/lib/db";
+import { Prisma } from "@/prisma/generated/client";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
 
 function formatDate(date: string | Date | null) {
