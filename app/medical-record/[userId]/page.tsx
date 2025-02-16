@@ -2,7 +2,12 @@ import Header from "@/components/custom/Header";
 import MedicalForm from "@/components/custom/MedicalForm";
 import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
+import {
+	EducationHistory,
+	EmploymentHistory,
+	MedicalRecord,
+	Prisma,
+} from "@prisma/client";
 import Link from "next/link";
 
 function formatDate(date: string | Date | null) {
@@ -38,20 +43,26 @@ async function fetchPatientData(id: string) {
 				date_of_birth: formatDate(patientData.date_of_birth),
 				created_at: formatDate(patientData.created_at),
 				updated_at: formatDate(patientData.updated_at),
-				educationHistory: patientData.educationHistory.map((edu) => ({
-					...edu,
-					start_date: formatDate(new Date(edu.start_date)),
-					end_date: edu.end_date ? formatDate(new Date(edu.end_date)) : null,
-				})),
-				employmentHistory: patientData.employmentHistory.map((job) => ({
-					...job,
-					start_date: formatDate(new Date(job.start_date)),
-					end_date: job.end_date ? new Date(job.end_date) : null,
-				})),
-				medicalRecords: patientData.medicalRecords.map((record) => ({
-					...record,
-					visit_date: formatDate(record.visit_date),
-				})),
+				educationHistory: patientData.educationHistory.map(
+					(edu: EducationHistory) => ({
+						...edu,
+						start_date: formatDate(new Date(edu.start_date)),
+						end_date: edu.end_date ? formatDate(new Date(edu.end_date)) : null,
+					})
+				),
+				employmentHistory: patientData.employmentHistory.map(
+					(job: EmploymentHistory) => ({
+						...job,
+						start_date: formatDate(new Date(job.start_date)),
+						end_date: job.end_date ? new Date(job.end_date) : null,
+					})
+				),
+				medicalRecords: patientData.medicalRecords.map(
+					(record: MedicalRecord) => ({
+						...record,
+						visit_date: formatDate(record.visit_date),
+					})
+				),
 			};
 
 			return { patientData: serializedData };

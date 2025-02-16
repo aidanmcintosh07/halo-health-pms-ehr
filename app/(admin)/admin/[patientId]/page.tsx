@@ -52,16 +52,16 @@ async function fetchPatientData(
 	return {
 		...user,
 		date_of_birth: formatDate(user.date_of_birth),
-		medicalRecords: user.medicalRecords.map((record) => ({
+		medicalRecords: user.medicalRecords.map((record: MedicalRecord) => ({
 			...record,
 			visit_date: formatDate(record.visit_date),
 		})),
-		educationHistory: user.educationHistory.map((edu) => ({
+		educationHistory: user.educationHistory.map((edu: EducationHistory) => ({
 			...edu,
 			start_date: formatDate(edu.start_date),
 			end_date: edu.end_date ? formatDate(edu.end_date) : null,
 		})),
-		employmentHistory: user.employmentHistory.map((job) => ({
+		employmentHistory: user.employmentHistory.map((job: EmploymentHistory) => ({
 			...job,
 			start_date: formatDate(job.start_date),
 			end_date: job.end_date ? formatDate(job.end_date) : null,
