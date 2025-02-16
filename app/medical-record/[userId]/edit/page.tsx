@@ -57,8 +57,11 @@ async function fetchPatientData(id: string) {
 	return result;
 }
 
-async function Edit({ params }: { params: { userId: string } }) {
-	const { userId } = params;
+type Params = Promise<{ patientId: string }>;
+
+async function Edit(props: { params: Params }) {
+	const params = await props.params;
+	const userId = params.patientId;
 
 	const patientData = await fetchPatientData(userId);
 

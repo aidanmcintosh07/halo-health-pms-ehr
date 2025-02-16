@@ -4,13 +4,13 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { EducationHistory, EmploymentHistory } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(
-	req: NextRequest,
-	{ params }: { params: { patientId: string } }
-) {
+type Params = Promise<{ patientId: string }>;
+
+export async function PATCH(req: NextRequest, segmentData: { params: Params }) {
 	try {
 		const user = await currentUser();
-		const { patientId } = params;
+		const params = await segmentData.params;
+		const patientId = params.patientId;
 
 		if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
@@ -155,11 +155,12 @@ export async function PATCH(
 
 export async function DELETE(
 	req: NextRequest,
-	{ params }: { params: { patientId: string } }
+	segmentData: { params: Params }
 ) {
 	try {
 		const user = await currentUser();
-		const { patientId } = params;
+		const params = await segmentData.params;
+		const patientId = params.patientId;
 
 		if (!user) return new NextResponse("Unauthorized", { status: 401 });
 

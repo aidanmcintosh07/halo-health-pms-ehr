@@ -69,12 +69,11 @@ async function fetchPatientData(
 	};
 }
 
-async function UserMedicalRecord({
-	params,
-}: {
-	params: { patientId: string };
-}) {
-	const { patientId } = params;
+type Params = Promise<{ patientId: string }>;
+
+async function UserMedicalRecord(props: { params: Params }) {
+	const params = await props.params;
+	const patientId = params.patientId;
 	const user = await currentUser();
 
 	const patientData = await fetchPatientData(patientId);
