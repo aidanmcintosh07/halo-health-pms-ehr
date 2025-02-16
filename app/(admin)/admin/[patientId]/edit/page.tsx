@@ -1,12 +1,8 @@
 import AdminEditPatientForm from "@/components/custom/AdminEditPatientForm";
 import Header from "@/components/custom/Header";
 import { prisma } from "@/lib/db";
-import {
-	EducationHistory,
-	EmploymentHistory,
-	MedicalRecord,
-	Prisma,
-} from "@prisma/client";
+import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
+import { Prisma } from "@prisma/client";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";

@@ -27,55 +27,36 @@ export type Patient = {
 };
 
 export type MedicalRecord = {
-	record_id: string;
 	patient_id: string;
+	record_id: string;
 	visit_date: Date;
 	provider: string;
 	visit_reason: string;
-	diagnosis?: string;
-	treatment?: string;
-	medications?: string;
-	allergies?: string;
-	vaccination_status?: string;
-	notes?: string;
+	diagnosis: string | null;
+	treatment: string | null;
+	medications: string | null;
+	allergies: string | null;
+	vaccination_status: string | null;
+	notes: string | null;
 };
 
 export type EducationHistory = {
-	education_id: string;
 	patient_id: string;
-	institution_name: string;
+	notes: string | null;
+	education_id: string;
+	institution_names: string;
 	qualification: string;
 	start_date: Date;
-	end_date?: Date;
-	notes?: string;
+	end_date: Date | null;
 };
 
 export type EmploymentHistory = {
-	employment_id: string;
 	patient_id: string;
+	notes: string | null;
+	start_date: Date;
+	end_date: Date | null;
+	employment_id: string;
 	employer_name: string;
 	job_title: string;
-	start_date: Date;
-	end_date?: Date;
 	employment_status: string;
-	notes?: string;
-};
-
-export type AntenatalRecord = {
-	antenatal_id: string;
-	patient_id: string;
-	antenatal_visit_date: Date;
-	gestational_age: number;
-	complications?: string;
-	doctor_notes?: string;
-};
-
-export type EmergencyContact = {
-	contact_id: string;
-	patient_id: string;
-	name: string;
-	relationship: string;
-	phone_number: string;
-	email?: string;
-	address?: string;
 };

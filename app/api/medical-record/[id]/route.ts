@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
-import { MedicalRecord } from "@/typings";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { EducationHistory, EmploymentHistory, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
 
 import { NextRequest, NextResponse } from "next/server";
 
