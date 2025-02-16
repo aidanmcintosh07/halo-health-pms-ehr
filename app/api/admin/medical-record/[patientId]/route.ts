@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/db";
 import { MedicalRecord } from "@/typings";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { EducationHistory, EmploymentHistory } from "@prisma/client";
+import {
+	EducationHistory,
+	EmploymentHistory,
+	Prisma,
+	PrismaClient,
+} from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = Promise<{ patientId: string }>;
@@ -166,21 +172,33 @@ export async function DELETE(
 
 		await auth.protect();
 
-		const deletedPatient = await prisma.$transaction(async (tx) => {
-			await tx.medicalRecord.deleteMany({
-				where: { patient: { patient_id: patientId } },
-			});
-			await tx.educationHistory.deleteMany({
-				where: { patient: { patient_id: patientId } },
-			});
-			await tx.employmentHistory.deleteMany({
-				where: { patient: { patient_id: patientId } },
-			});
+		const deletedPatient = await prisma.$transaction(
+			async (
+				tx: Omit<
+					PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+					| "$connect"
+					| "$disconnect"
+					| "$on"
+					| "$transaction"
+					| "$use"
+					| "$extends"
+				>
+			) => {
+				await tx.medicalRecord.deleteMany({
+					where: { patient: { patient_id: patientId } },
+				});
+				await tx.educationHistory.deleteMany({
+					where: { patient: { patient_id: patientId } },
+				});
+				await tx.employmentHistory.deleteMany({
+					where: { patient: { patient_id: patientId } },
+				});
 
-			return await tx.patient.delete({
-				where: { patient_id: patientId },
-			});
-		});
+				return await tx.patient.delete({
+					where: { patient_id: patientId },
+				});
+			}
+		);
 
 		console.log("✅ Patient and related data deleted:", deletedPatient);
 		return NextResponse.json(deletedPatient);
