@@ -59,7 +59,7 @@ async function fetchPatientData(id: string) {
 }
 
 async function MedicalRecords({ params }: { params: { userId: string } }) {
-	const { userId } = await params;
+	const { userId } = params;
 	const user = await currentUser();
 
 	const patientData = await fetchPatientData(userId);

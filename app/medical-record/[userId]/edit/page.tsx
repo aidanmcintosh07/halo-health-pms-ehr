@@ -58,7 +58,7 @@ async function fetchPatientData(id: string) {
 }
 
 async function Edit({ params }: { params: { userId: string } }) {
-	const { userId } = await params;
+	const { userId } = params;
 
 	const patientData = await fetchPatientData(userId);
 
