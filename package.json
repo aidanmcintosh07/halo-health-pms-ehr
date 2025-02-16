@@ -4,11 +4,10 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "npx prisma generate && next build",
+		"build": "prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"postinstall": "prisma generate",
-		"vercel-build": "prisma generate && next build"
+		"postinstall": "prisma generate"
 	},
 	"dependencies": {
 		"@clerk/backend": "^1.24.1",
