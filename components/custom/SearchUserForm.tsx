@@ -1,10 +1,10 @@
 "use client";
 
-import { Patient } from "@prisma/client";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { Patient } from "@/typings";
 
 function SearchUserForm() {
 	const [query, setQuery] = useState("");

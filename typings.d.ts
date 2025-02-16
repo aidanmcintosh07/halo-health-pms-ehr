@@ -1,29 +1,26 @@
 export type Patient = {
 	patient_id: string;
+	owner_id: string;
 	first_name: string;
-	middle_name?: string;
+	middle_name: string | null;
 	last_name: string;
 	date_of_birth: Date;
 	gender: string;
 	nationality: string;
-	ethnicity?: string;
+	ethnicity: string | null;
 	place_of_birth: string;
-	government_id?: string;
-	contact_phone?: string;
-	contact_email?: string;
+	id_type: string;
+	government_id: string;
+	contact_phone: string | null;
+	contact_email: string | null;
 	address_line1: string;
-	address_line2?: string;
+	address_line2: string | null;
 	city: string;
 	parish: string;
-	postal_code?: string;
+	postal_code: string | null;
 	country: string;
 	created_at: Date;
 	updated_at: Date;
-	medicalRecords?: MedicalRecord[];
-	educationHistory?: EducationHistory[];
-	employmentHistory?: EmploymentHistory[];
-	antenatalRecords?: AntenatalRecord[];
-	emergencyContacts?: EmergencyContact[];
 };
 
 export type MedicalRecord = {

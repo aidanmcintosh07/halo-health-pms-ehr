@@ -2,9 +2,9 @@ import Header from "@/components/custom/Header";
 import MedicalForm from "@/components/custom/MedicalForm";
 import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
+import { Prisma } from "@/prisma/generated/client";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";

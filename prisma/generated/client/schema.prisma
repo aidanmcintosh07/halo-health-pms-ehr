@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  patient_id        String              @id @default(cuid())
+  owner_id          String              @unique
+  first_name        String
+  middle_name       String?
+  last_name         String
+  date_of_birth     DateTime
+  gender            String
+  nationality       String
+  ethnicity         String?
+  place_of_birth    String
+  id_type           String
+  government_id     String              @unique
+  contact_phone     String?
+  contact_email     String?             @unique
+  address_line1     String
+  address_line2     String?
+  city              String
+  parish            String
+  postal_code       String?
+  country           String
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  medicalRecords    MedicalRecord[]
+  educationHistory  EducationHistory[]
+  employmentHistory EmploymentHistory[]
+}
+
+model MedicalRecord {
+  record_id          String   @id @default(cuid())
+  patient_id         String
+  patient            Patient  @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  visit_date         DateTime
+  provider           String
+  visit_reason       String
+  diagnosis          String?
+  treatment          String?
+  medications        String?
+  allergies          String?
+  vaccination_status String?
+  notes              String?
+}
+
+model EducationHistory {
+  education_id      String    @id @default(cuid())
+  patient_id        String
+  patient           Patient   @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  institution_names String
+  qualification     String
+  start_date        DateTime
+  end_date          DateTime?
+  notes             String?
+}
+
+model EmploymentHistory {
+  employment_id     String    @id @default(cuid())
+  patient_id        String
+  patient           Patient   @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  employer_name     String
+  job_title         String
+  start_date        DateTime
+  end_date          DateTime?
+  employment_status String
+  notes             String?
+}
