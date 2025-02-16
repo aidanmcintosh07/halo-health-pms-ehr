@@ -93,8 +93,6 @@ async function MedicalRecords(props: { params: Params }) {
 		);
 	}
 
-	console.log(patientData.patientData);
-
 	return (
 		<>
 			<Header />

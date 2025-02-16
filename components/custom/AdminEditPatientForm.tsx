@@ -256,8 +256,8 @@ function AdminEditPatientForm({ patientData }: EditPatientFormProps) {
 		},
 	});
 
-	console.log("Form errors: ", form.formState.errors);
-	console.log("Form values: ", form.getValues());
+	// console.log("Form errors: ", form.formState.errors);
+	// console.log("Form values: ", form.getValues());
 
 	// Field Arrays for dynamic sections
 	const {
@@ -524,7 +524,7 @@ function AdminEditPatientForm({ patientData }: EditPatientFormProps) {
 													<UploadButton
 														endpoint="imageUploader"
 														onClientUploadComplete={(res) => {
-															console.log("Files: ", res);
+															// console.log("Files: ", res);
 															if (res && res.length > 0) {
 																field.onChange(res[0].ufsUrl);
 															}
