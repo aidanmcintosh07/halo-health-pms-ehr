@@ -18,7 +18,7 @@ async function Header() {
 				{/* Logo */}
 				<Link href="/" className="flex items-center space-x-2">
 					<Image
-						src="/logo.jpg"
+						src="logo.jpg"
 						height={50}
 						width={50}
 						alt="Logo"
@@ -50,7 +50,6 @@ async function Header() {
 					)}
 				</div>
 
-				
 				<div className="flex items-center space-x-4">
 					<SignedOut>
 						<SignInButton>
