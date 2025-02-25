@@ -17,7 +17,7 @@ async function Header() {
 			<div className="max-w-7xl mx-auto flex items-center justify-between p-4">
 				{/* Logo */}
 				<Link href="/" className="flex items-center space-x-2">
-					<Image
+					<img
 						src="/logo.jpg"
 						height={50}
 						width={50}
