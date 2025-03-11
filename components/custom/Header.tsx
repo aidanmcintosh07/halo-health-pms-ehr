@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
 	SignedIn,
 	SignedOut,
@@ -23,7 +24,7 @@ async function Header() {
 						alt="Logo"
 						className="rounded-lg"
 					/>
-					<span className="text-xl font-extrabold bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent">
+					<span className="text-xl font-extrabold text-black bg-clip-text">
 						Halo Health
 					</span>
 				</Link>
@@ -52,12 +53,12 @@ async function Header() {
 				<div className="flex items-center space-x-4">
 					<SignedOut>
 						<SignInButton>
-							<button className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 hover:opacity-90">
+							<button className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition bg-black hover:opacity-90">
 								Sign In
 							</button>
 						</SignInButton>
 						<SignUpButton>
-							<button className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition bg-gradient-to-r from-green-500 via-yellow-500 to-orange-500 hover:opacity-90">
+							<button className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition bg-black hover:opacity-90">
 								Sign Up
 							</button>
 						</SignUpButton>
