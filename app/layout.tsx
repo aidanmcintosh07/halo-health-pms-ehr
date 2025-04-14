@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import "@uploadthing/react/styles.css";
+import {Analytics} from "@vercel/analytics/react";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<ClerkProvider>
+		<Analytics />
 			<html lang="en">
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
