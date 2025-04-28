@@ -68,14 +68,12 @@ async function fetchPatientData(id: string) {
 	return result;
 }
 
-type Params = Promise<{ patientId: string }>;
 
-async function MedicalRecords(props: { params: Params }) {
-	const params = await props.params;
-	const userId = params.patientId;
+
+async function MedicalRecords() {
 	const user = await currentUser();
 
-	const patientData = await fetchPatientData(userId);
+	const patientData = await fetchPatientData(user!.id);
 
 	if (!patientData.patientData) {
 		return (
@@ -107,7 +105,7 @@ async function MedicalRecords(props: { params: Params }) {
 				{(user?.id === patientData.patientData.owner_id ||
 					user?.publicMetadata.role === "admin") && (
 					<Link
-						href={`/medical-record/${userId}/edit`}
+						href={`/medical-record/${user.id}/edit`}
 						className="mt-4 text-white bg-black hover:bg-black/90 p-2 rounded-md"
 					>
 						Edit Record

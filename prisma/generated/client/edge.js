@@ -182,7 +182,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\aidan\\OneDrive\\Documents\\Builds\\halo-health-pms-ehr\\prisma\\generated\\client",
+      "value": "C:\\Users\\aidan\\Documents\\halo-health-pms-ehr\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -196,7 +196,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\aidan\\OneDrive\\Documents\\Builds\\halo-health-pms-ehr\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\aidan\\Documents\\halo-health-pms-ehr\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
