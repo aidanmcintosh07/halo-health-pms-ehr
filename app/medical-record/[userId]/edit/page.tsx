@@ -71,7 +71,7 @@ async function fetchPatientData(id: string) {
 async function Edit() {
 	const user = await currentUser();
 
-	const patientData = await fetchPatientData(user?.id!);
+	const patientData = await fetchPatientData(user?.id as string);
 
 	return (
 		<div>
