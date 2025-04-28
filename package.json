@@ -27,11 +27,8 @@
 		"@types/json-schema": "^7.0.15",
 		"@uploadthing/react": "^7.3.0",
 		"@vercel/analytics": "^1.5.0",
-<<<<<<< HEAD
-=======
-		"@vercel/speed-insights": "^1.2.0",
->>>>>>> 2b6d7c77272742fac466debf6debabba8bb02468
-		"axios": "^1.8.4",
+"@vercel/speed-insights": "^1.2.0",
+"axios": "^1.8.4",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cookie": "^1.0.2",
