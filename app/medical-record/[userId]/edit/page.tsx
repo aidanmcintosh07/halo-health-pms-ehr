@@ -3,6 +3,7 @@ import Header from "@/components/custom/Header";
 import prisma from "@/lib/db";
 import { Prisma } from "@/prisma/generated/client";
 import { EducationHistory, EmploymentHistory, MedicalRecord } from "@/typings";
+import { currentUser } from "@clerk/nextjs/server";
 
 function formatDate(date: string | Date | null) {
 	if (!date) return "N/A";
@@ -67,13 +68,10 @@ async function fetchPatientData(id: string) {
 	return result;
 }
 
-type Params = Promise<{ patientId: string }>;
+async function Edit() {
+	const user = await currentUser();
 
-async function Edit(props: { params: Params }) {
-	const params = await props.params;
-	const userId = params.patientId;
-
-	const patientData = await fetchPatientData(userId);
+	const patientData = await fetchPatientData(user?.id!);
 
 	return (
 		<div>

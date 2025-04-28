@@ -71,7 +71,7 @@ export class PrismaClient<
    */
 
   constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
-  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
+  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
    * Connect with the database
@@ -155,9 +155,9 @@ export class PrismaClient<
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
 
-  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb, ExtArgs, $Utils.Call<Prisma.TypeMapCb, {
+  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb<ClientOptions>, ExtArgs, $Utils.Call<Prisma.TypeMapCb<ClientOptions>, {
     extArgs: ExtArgs
-  }>, ClientOptions>
+  }>>
 
       /**
    * `prisma.patient`: Exposes CRUD operations for the **Patient** model.
@@ -256,8 +256,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.3.1
-   * Query Engine version: acc0b9dd43eb689cbd20c9470515d719db10d0b0
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -524,7 +524,7 @@ export namespace Prisma {
   type AtLeast<O extends object, K extends string> = NoExpand<
     O extends unknown
     ? | (K extends keyof O ? { [P in K]: O[P] } & O : O)
-      | {[P in keyof O as P extends K ? K : never]-?: O[P]} & O
+      | {[P in keyof O as P extends K ? P : never]-?: O[P]} & O
     : never>;
 
   type _Strict<U, _U = U> = U extends unknown ? U & OptionalFlat<_Record<Exclude<Keys<_U>, keyof U>, never>> : never;
@@ -651,11 +651,14 @@ export namespace Prisma {
     db?: Datasource
   }
 
-  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs, clientOptions: PrismaClientOptions }, $Utils.Record<string, any>> {
-    returns: Prisma.TypeMap<this['params']['extArgs'], this['params']['clientOptions']>
+  interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs'], ClientOptions extends { omit: infer OmitOptions } ? OmitOptions : {}>
   }
 
-  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> = {
+    globalOmitOptions: {
+      omit: GlobalOmitOptions
+    }
     meta: {
       modelProps: "patient" | "medicalRecord" | "educationHistory" | "employmentHistory"
       txIsolationLevel: Prisma.TransactionIsolationLevel
@@ -1619,7 +1622,7 @@ export namespace Prisma {
       select?: PatientCountAggregateInputType | true
     }
 
-  export interface PatientDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface PatientDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Patient'], meta: { name: 'Patient' } }
     /**
      * Find zero or one Patient that matches the filter.
@@ -1632,7 +1635,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends PatientFindUniqueArgs>(args: SelectSubset<T, PatientFindUniqueArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends PatientFindUniqueArgs>(args: SelectSubset<T, PatientFindUniqueArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one Patient that matches the filter or throw an error with `error.code='P2025'`
@@ -1646,7 +1649,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends PatientFindUniqueOrThrowArgs>(args: SelectSubset<T, PatientFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends PatientFindUniqueOrThrowArgs>(args: SelectSubset<T, PatientFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Patient that matches the filter.
@@ -1661,7 +1664,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends PatientFindFirstArgs>(args?: SelectSubset<T, PatientFindFirstArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends PatientFindFirstArgs>(args?: SelectSubset<T, PatientFindFirstArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first Patient that matches the filter or
@@ -1677,7 +1680,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends PatientFindFirstOrThrowArgs>(args?: SelectSubset<T, PatientFindFirstOrThrowArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends PatientFindFirstOrThrowArgs>(args?: SelectSubset<T, PatientFindFirstOrThrowArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more Patients that matches the filter.
@@ -1695,7 +1698,7 @@ export namespace Prisma {
      * const patientWithPatient_idOnly = await prisma.patient.findMany({ select: { patient_id: true } })
      * 
      */
-    findMany<T extends PatientFindManyArgs>(args?: SelectSubset<T, PatientFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends PatientFindManyArgs>(args?: SelectSubset<T, PatientFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a Patient.
@@ -1709,7 +1712,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends PatientCreateArgs>(args: SelectSubset<T, PatientCreateArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends PatientCreateArgs>(args: SelectSubset<T, PatientCreateArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many Patients.
@@ -1747,7 +1750,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends PatientCreateManyAndReturnArgs>(args?: SelectSubset<T, PatientCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends PatientCreateManyAndReturnArgs>(args?: SelectSubset<T, PatientCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a Patient.
@@ -1761,7 +1764,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends PatientDeleteArgs>(args: SelectSubset<T, PatientDeleteArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends PatientDeleteArgs>(args: SelectSubset<T, PatientDeleteArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one Patient.
@@ -1778,7 +1781,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends PatientUpdateArgs>(args: SelectSubset<T, PatientUpdateArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends PatientUpdateArgs>(args: SelectSubset<T, PatientUpdateArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more Patients.
@@ -1841,7 +1844,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends PatientUpdateManyAndReturnArgs>(args: SelectSubset<T, PatientUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends PatientUpdateManyAndReturnArgs>(args: SelectSubset<T, PatientUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one Patient.
@@ -1860,7 +1863,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends PatientUpsertArgs>(args: SelectSubset<T, PatientUpsertArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends PatientUpsertArgs>(args: SelectSubset<T, PatientUpsertArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -2000,11 +2003,11 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__PatientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__PatientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    medicalRecords<T extends Patient$medicalRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Patient$medicalRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
-    educationHistory<T extends Patient$educationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Patient$educationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
-    employmentHistory<T extends Patient$employmentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Patient$employmentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
+    medicalRecords<T extends Patient$medicalRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Patient$medicalRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    educationHistory<T extends Patient$educationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Patient$educationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    employmentHistory<T extends Patient$employmentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Patient$employmentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2032,7 +2035,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Patient model
-   */ 
+   */
   interface PatientFieldRefs {
     readonly patient_id: FieldRef<"Patient", 'String'>
     readonly owner_id: FieldRef<"Patient", 'String'>
@@ -2832,7 +2835,7 @@ export namespace Prisma {
       select?: MedicalRecordCountAggregateInputType | true
     }
 
-  export interface MedicalRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface MedicalRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MedicalRecord'], meta: { name: 'MedicalRecord' } }
     /**
      * Find zero or one MedicalRecord that matches the filter.
@@ -2845,7 +2848,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends MedicalRecordFindUniqueArgs>(args: SelectSubset<T, MedicalRecordFindUniqueArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends MedicalRecordFindUniqueArgs>(args: SelectSubset<T, MedicalRecordFindUniqueArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one MedicalRecord that matches the filter or throw an error with `error.code='P2025'`
@@ -2859,7 +2862,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends MedicalRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, MedicalRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends MedicalRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, MedicalRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first MedicalRecord that matches the filter.
@@ -2874,7 +2877,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends MedicalRecordFindFirstArgs>(args?: SelectSubset<T, MedicalRecordFindFirstArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends MedicalRecordFindFirstArgs>(args?: SelectSubset<T, MedicalRecordFindFirstArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first MedicalRecord that matches the filter or
@@ -2890,7 +2893,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends MedicalRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, MedicalRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends MedicalRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, MedicalRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more MedicalRecords that matches the filter.
@@ -2908,7 +2911,7 @@ export namespace Prisma {
      * const medicalRecordWithRecord_idOnly = await prisma.medicalRecord.findMany({ select: { record_id: true } })
      * 
      */
-    findMany<T extends MedicalRecordFindManyArgs>(args?: SelectSubset<T, MedicalRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends MedicalRecordFindManyArgs>(args?: SelectSubset<T, MedicalRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a MedicalRecord.
@@ -2922,7 +2925,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends MedicalRecordCreateArgs>(args: SelectSubset<T, MedicalRecordCreateArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends MedicalRecordCreateArgs>(args: SelectSubset<T, MedicalRecordCreateArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many MedicalRecords.
@@ -2960,7 +2963,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends MedicalRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, MedicalRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends MedicalRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, MedicalRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a MedicalRecord.
@@ -2974,7 +2977,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends MedicalRecordDeleteArgs>(args: SelectSubset<T, MedicalRecordDeleteArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends MedicalRecordDeleteArgs>(args: SelectSubset<T, MedicalRecordDeleteArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one MedicalRecord.
@@ -2991,7 +2994,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends MedicalRecordUpdateArgs>(args: SelectSubset<T, MedicalRecordUpdateArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends MedicalRecordUpdateArgs>(args: SelectSubset<T, MedicalRecordUpdateArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more MedicalRecords.
@@ -3054,7 +3057,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends MedicalRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, MedicalRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends MedicalRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, MedicalRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one MedicalRecord.
@@ -3073,7 +3076,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends MedicalRecordUpsertArgs>(args: SelectSubset<T, MedicalRecordUpsertArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends MedicalRecordUpsertArgs>(args: SelectSubset<T, MedicalRecordUpsertArgs<ExtArgs>>): Prisma__MedicalRecordClient<$Result.GetResult<Prisma.$MedicalRecordPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -3213,9 +3216,9 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__MedicalRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__MedicalRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3243,7 +3246,7 @@ export namespace Prisma {
 
   /**
    * Fields of the MedicalRecord model
-   */ 
+   */
   interface MedicalRecordFieldRefs {
     readonly record_id: FieldRef<"MedicalRecord", 'String'>
     readonly patient_id: FieldRef<"MedicalRecord", 'String'>
@@ -3920,7 +3923,7 @@ export namespace Prisma {
       select?: EducationHistoryCountAggregateInputType | true
     }
 
-  export interface EducationHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface EducationHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EducationHistory'], meta: { name: 'EducationHistory' } }
     /**
      * Find zero or one EducationHistory that matches the filter.
@@ -3933,7 +3936,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends EducationHistoryFindUniqueArgs>(args: SelectSubset<T, EducationHistoryFindUniqueArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends EducationHistoryFindUniqueArgs>(args: SelectSubset<T, EducationHistoryFindUniqueArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one EducationHistory that matches the filter or throw an error with `error.code='P2025'`
@@ -3947,7 +3950,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends EducationHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, EducationHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends EducationHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, EducationHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first EducationHistory that matches the filter.
@@ -3962,7 +3965,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends EducationHistoryFindFirstArgs>(args?: SelectSubset<T, EducationHistoryFindFirstArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends EducationHistoryFindFirstArgs>(args?: SelectSubset<T, EducationHistoryFindFirstArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first EducationHistory that matches the filter or
@@ -3978,7 +3981,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends EducationHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, EducationHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends EducationHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, EducationHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more EducationHistories that matches the filter.
@@ -3996,7 +3999,7 @@ export namespace Prisma {
      * const educationHistoryWithEducation_idOnly = await prisma.educationHistory.findMany({ select: { education_id: true } })
      * 
      */
-    findMany<T extends EducationHistoryFindManyArgs>(args?: SelectSubset<T, EducationHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends EducationHistoryFindManyArgs>(args?: SelectSubset<T, EducationHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a EducationHistory.
@@ -4010,7 +4013,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends EducationHistoryCreateArgs>(args: SelectSubset<T, EducationHistoryCreateArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends EducationHistoryCreateArgs>(args: SelectSubset<T, EducationHistoryCreateArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many EducationHistories.
@@ -4048,7 +4051,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends EducationHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, EducationHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends EducationHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, EducationHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a EducationHistory.
@@ -4062,7 +4065,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends EducationHistoryDeleteArgs>(args: SelectSubset<T, EducationHistoryDeleteArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends EducationHistoryDeleteArgs>(args: SelectSubset<T, EducationHistoryDeleteArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one EducationHistory.
@@ -4079,7 +4082,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends EducationHistoryUpdateArgs>(args: SelectSubset<T, EducationHistoryUpdateArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends EducationHistoryUpdateArgs>(args: SelectSubset<T, EducationHistoryUpdateArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more EducationHistories.
@@ -4142,7 +4145,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends EducationHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, EducationHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends EducationHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, EducationHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one EducationHistory.
@@ -4161,7 +4164,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends EducationHistoryUpsertArgs>(args: SelectSubset<T, EducationHistoryUpsertArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends EducationHistoryUpsertArgs>(args: SelectSubset<T, EducationHistoryUpsertArgs<ExtArgs>>): Prisma__EducationHistoryClient<$Result.GetResult<Prisma.$EducationHistoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -4301,9 +4304,9 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__EducationHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__EducationHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4331,7 +4334,7 @@ export namespace Prisma {
 
   /**
    * Fields of the EducationHistory model
-   */ 
+   */
   interface EducationHistoryFieldRefs {
     readonly education_id: FieldRef<"EducationHistory", 'String'>
     readonly patient_id: FieldRef<"EducationHistory", 'String'>
@@ -5016,7 +5019,7 @@ export namespace Prisma {
       select?: EmploymentHistoryCountAggregateInputType | true
     }
 
-  export interface EmploymentHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
+  export interface EmploymentHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmploymentHistory'], meta: { name: 'EmploymentHistory' } }
     /**
      * Find zero or one EmploymentHistory that matches the filter.
@@ -5029,7 +5032,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUnique<T extends EmploymentHistoryFindUniqueArgs>(args: SelectSubset<T, EmploymentHistoryFindUniqueArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findUnique<T extends EmploymentHistoryFindUniqueArgs>(args: SelectSubset<T, EmploymentHistoryFindUniqueArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find one EmploymentHistory that matches the filter or throw an error with `error.code='P2025'`
@@ -5043,7 +5046,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findUniqueOrThrow<T extends EmploymentHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, EmploymentHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findUniqueOrThrow<T extends EmploymentHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, EmploymentHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first EmploymentHistory that matches the filter.
@@ -5058,7 +5061,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirst<T extends EmploymentHistoryFindFirstArgs>(args?: SelectSubset<T, EmploymentHistoryFindFirstArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
+    findFirst<T extends EmploymentHistoryFindFirstArgs>(args?: SelectSubset<T, EmploymentHistoryFindFirstArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find the first EmploymentHistory that matches the filter or
@@ -5074,7 +5077,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    findFirstOrThrow<T extends EmploymentHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, EmploymentHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
+    findFirstOrThrow<T extends EmploymentHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, EmploymentHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Find zero or more EmploymentHistories that matches the filter.
@@ -5092,7 +5095,7 @@ export namespace Prisma {
      * const employmentHistoryWithEmployment_idOnly = await prisma.employmentHistory.findMany({ select: { employment_id: true } })
      * 
      */
-    findMany<T extends EmploymentHistoryFindManyArgs>(args?: SelectSubset<T, EmploymentHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findMany", ClientOptions>>
+    findMany<T extends EmploymentHistoryFindManyArgs>(args?: SelectSubset<T, EmploymentHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
      * Create a EmploymentHistory.
@@ -5106,7 +5109,7 @@ export namespace Prisma {
      * })
      * 
      */
-    create<T extends EmploymentHistoryCreateArgs>(args: SelectSubset<T, EmploymentHistoryCreateArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
+    create<T extends EmploymentHistoryCreateArgs>(args: SelectSubset<T, EmploymentHistoryCreateArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Create many EmploymentHistories.
@@ -5144,7 +5147,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends EmploymentHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, EmploymentHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
+    createManyAndReturn<T extends EmploymentHistoryCreateManyAndReturnArgs>(args?: SelectSubset<T, EmploymentHistoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Delete a EmploymentHistory.
@@ -5158,7 +5161,7 @@ export namespace Prisma {
      * })
      * 
      */
-    delete<T extends EmploymentHistoryDeleteArgs>(args: SelectSubset<T, EmploymentHistoryDeleteArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
+    delete<T extends EmploymentHistoryDeleteArgs>(args: SelectSubset<T, EmploymentHistoryDeleteArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Update one EmploymentHistory.
@@ -5175,7 +5178,7 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends EmploymentHistoryUpdateArgs>(args: SelectSubset<T, EmploymentHistoryUpdateArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
+    update<T extends EmploymentHistoryUpdateArgs>(args: SelectSubset<T, EmploymentHistoryUpdateArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
      * Delete zero or more EmploymentHistories.
@@ -5238,7 +5241,7 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends EmploymentHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, EmploymentHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
+    updateManyAndReturn<T extends EmploymentHistoryUpdateManyAndReturnArgs>(args: SelectSubset<T, EmploymentHistoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
      * Create or update one EmploymentHistory.
@@ -5257,7 +5260,7 @@ export namespace Prisma {
      *   }
      * })
      */
-    upsert<T extends EmploymentHistoryUpsertArgs>(args: SelectSubset<T, EmploymentHistoryUpsertArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
+    upsert<T extends EmploymentHistoryUpsertArgs>(args: SelectSubset<T, EmploymentHistoryUpsertArgs<ExtArgs>>): Prisma__EmploymentHistoryClient<$Result.GetResult<Prisma.$EmploymentHistoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
@@ -5397,9 +5400,9 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__EmploymentHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__EmploymentHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    patient<T extends PatientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientDefaultArgs<ExtArgs>>): Prisma__PatientClient<$Result.GetResult<Prisma.$PatientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5427,7 +5430,7 @@ export namespace Prisma {
 
   /**
    * Fields of the EmploymentHistory model
-   */ 
+   */
   interface EmploymentHistoryFieldRefs {
     readonly employment_id: FieldRef<"EmploymentHistory", 'String'>
     readonly patient_id: FieldRef<"EmploymentHistory", 'String'>
@@ -5962,7 +5965,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
